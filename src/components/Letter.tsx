@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { AppContext, AppContextProps } from "../../App";
+import { AppContext, AppContextProps } from "../App";
 type LetterProps = {
   row: number;
   col: number;

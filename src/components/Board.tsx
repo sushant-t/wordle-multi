@@ -1,20 +1,20 @@
 import React, { useState, useEffect, useContext } from "react";
-import { AppContext, AppContextProps } from "../../App";
-import { checkValidWord, removeStoredWord } from "../../services/WordFetcher";
+import { AppContext, AppContextProps } from "../App";
+import { checkValidWord, removeStoredWord } from "../services/WordFetcher";
 import {
   calculateTimeElapsed,
   clearTimer,
   startTimer,
-} from "../../services/WordMetrics";
+} from "../services/WordMetrics";
 import Letter from "./Letter";
 
 function Board(): JSX.Element {
   //   let curRow: number = 0;
   //   let curCol: number = 0;
-  const [curRow, setCurRow] = useState(0);
   const [curCol, setCurCol] = useState(0);
+  const [curRow, setCurRow] = useState(0);
 
-  let { board, setBoard, targetWord, setTargetWord } = useContext(
+  let { board, setBoard, keyboard, setKeyboard, targetWord } = useContext(
     AppContext
   ) as AppContextProps;
 
@@ -36,19 +36,24 @@ function Board(): JSX.Element {
             .join("");
           console.log(curWord);
           checkValidWord(curWord).then((valid) => {
-            if (!targetWord && !valid) return;
+            if (curWord != targetWord && !valid) return;
             for (let ind = 0; ind < curWord.length; ind++) {
               if (curWord[ind] == targetWord[ind]) {
                 // mark letter as green
                 board[curRow][ind].color = "green";
+                updateKeyboard(keyboard, curWord[ind], "green");
               } else if (targetWord.includes(curWord[ind])) {
                 // mark letter as yellow
                 board[curRow][ind].color = "yellow";
+                updateKeyboard(keyboard, curWord[ind], "yellow");
               } else {
                 // mark as black
                 board[curRow][ind].color = "black";
+                updateKeyboard(keyboard, curWord[ind], "black");
               }
             }
+
+            setKeyboard(JSON.parse(JSON.stringify(keyboard)));
             console.log(targetWord);
             setCurCol(0);
             setBoard(board);
@@ -95,6 +100,19 @@ function Board(): JSX.Element {
   // start timer for metrics
   startTimer();
   return <div className="board">{rows}</div>;
+}
+
+function updateKeyboard(keyboard: any, letter: string, color: string) {
+  keyboard.forEach((row: any) => {
+    let ind = row
+      .map((x: { letter: string; color: string }) => x.letter)
+      .indexOf(letter);
+    if (ind >= 0) {
+      console.log(row[ind]);
+      if (color == "green") row[ind].color = color;
+      if (row[ind].color == "") row[ind].color = color;
+    }
+  });
 }
 
 export default Board;

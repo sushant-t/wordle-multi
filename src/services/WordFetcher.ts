@@ -29,7 +29,7 @@ async function checkValidWord(word: string) {
     try {
       fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`).then(
         (response) => {
-          resolve(response.status != 404);
+          resolve(response.status !== 404);
         }
       );
     } catch (err) {
