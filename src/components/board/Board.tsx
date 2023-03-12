@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { AppContext, AppContextProps } from "../../App";
-import { removeStoredWord } from "../../services/WordFetcher";
+import { checkValidWord, removeStoredWord } from "../../services/WordFetcher";
 import Letter from "./Letter";
 
 function Board(): JSX.Element {
@@ -30,28 +30,35 @@ function Board(): JSX.Element {
             .map((entry: { letter: string; color: string }) => entry.letter)
             .join("");
           console.log(curWord);
-          for (let ind = 0; ind < curWord.length; ind++) {
-            if (curWord[ind] == targetWord[ind]) {
-              // mark letter as green
-              board[curRow][ind].color = "green";
-            } else if (targetWord.includes(curWord[ind])) {
-              // mark letter as yellow
-              board[curRow][ind].color = "yellow";
-            } else {
-              // mark as black
-              board[curRow][ind].color = "black";
+          checkValidWord(curWord).then((valid) => {
+            if (!valid) return;
+            for (let ind = 0; ind < curWord.length; ind++) {
+              if (curWord[ind] == targetWord[ind]) {
+                // mark letter as green
+                board[curRow][ind].color = "green";
+              } else if (targetWord.includes(curWord[ind])) {
+                // mark letter as yellow
+                board[curRow][ind].color = "yellow";
+              } else {
+                // mark as black
+                board[curRow][ind].color = "black";
+              }
             }
-          }
-          console.log(targetWord);
-          setCurRow(curRow + 1);
-          setCurCol(0);
-          setBoard(board);
-          if (curWord == targetWord) {
-            console.log("you won!");
-            setCurCol(-1);
-            removeStoredWord();
-            return;
-          }
+            console.log(targetWord);
+            setCurCol(0);
+            setBoard(board);
+            if (curWord == targetWord) {
+              console.log("you won!");
+              setCurCol(-1);
+              removeStoredWord();
+              return;
+            }
+            if (curRow == 5) {
+              console.log("You lost!");
+              return;
+            }
+            setCurRow(curRow + 1);
+          });
         }
       } else if (curCol >= 5 || curCol < 0) return;
       else {

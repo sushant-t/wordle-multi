@@ -23,4 +23,18 @@ async function fetchWord(wordLength: number) {
 function removeStoredWord() {
   window.localStorage.setItem("current_word", "");
 }
-export { fetchWord, removeStoredWord };
+
+async function checkValidWord(word: string) {
+  return new Promise<boolean>((resolve, reject) => {
+    try {
+      fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`).then(
+        (response) => {
+          resolve(response.status != 404);
+        }
+      );
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+export { fetchWord, removeStoredWord, checkValidWord };
