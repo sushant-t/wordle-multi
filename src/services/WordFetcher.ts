@@ -1,11 +1,18 @@
 // Get wordle word from some Heroku server online that will provide custom length words
 async function fetchWord(wordLength: number) {
+  var word = window.localStorage.getItem("current_word");
+  if (word) return word;
   return new Promise<string>((resolve, reject) => {
     try {
       fetch(`https://random-word-api.herokuapp.com/word?length=${wordLength}`)
         .then((response) => response.json())
         .then((data) => {
-          data.length ? resolve(data[0]) : reject(new Error("no word found!"));
+          if (data.length) {
+            window.localStorage.setItem("current_word", data[0]);
+            resolve(data[0]);
+          } else {
+            reject(new Error("no word found!"));
+          }
         });
     } catch (err) {
       reject(err);
@@ -13,4 +20,7 @@ async function fetchWord(wordLength: number) {
   });
 }
 
-export { fetchWord };
+function removeStoredWord() {
+  window.localStorage.setItem("current_word", "");
+}
+export { fetchWord, removeStoredWord };

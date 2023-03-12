@@ -1,3 +1,6 @@
+html {
+  background-color: #717376;
+}
 .App {
   text-align: center;
 }
@@ -35,4 +38,44 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.board {
+  height: 40vw;
+  width: 33vw;
+  border: 1px solid rgb(78, 78, 78);
+  display: grid;
+  margin: auto;
+}
+
+.boardRow {
+  flex: 33%;
+  max-height: 100%;
+  display: flex;
+  margin: 5px;
+}
+
+.letter {
+  flex: 33%;
+  border: 1px solid rgb(79, 77, 77);
+  margin: 5px;
+  display: grid;
+  place-items: center;
+  font-size: auto;
+  font-weight: bolder;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+  text-transform: capitalize;
+}
+
+.green-letter {
+  background-color: green;
+}
+
+.yellow-letter {
+  background-color: rgb(147, 147, 14);
+}
+
+.black-letter {
+  background-color: black;
 }
