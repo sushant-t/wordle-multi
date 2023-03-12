@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
 import { AppContext, AppContextProps } from "../../App";
 import { checkValidWord, removeStoredWord } from "../../services/WordFetcher";
+import {
+  calculateTimeElapsed,
+  clearTimer,
+  startTimer,
+} from "../../services/WordMetrics";
 import Letter from "./Letter";
 
 function Board(): JSX.Element {
@@ -31,7 +36,7 @@ function Board(): JSX.Element {
             .join("");
           console.log(curWord);
           checkValidWord(curWord).then((valid) => {
-            if (!valid) return;
+            if (!targetWord && !valid) return;
             for (let ind = 0; ind < curWord.length; ind++) {
               if (curWord[ind] == targetWord[ind]) {
                 // mark letter as green
@@ -48,9 +53,11 @@ function Board(): JSX.Element {
             setCurCol(0);
             setBoard(board);
             if (curWord == targetWord) {
-              console.log("you won!");
+              let timeElapsed = calculateTimeElapsed();
+              console.log(`you won in ${timeElapsed} seconds!`);
               setCurCol(-1);
               removeStoredWord();
+              clearTimer();
               return;
             }
             if (curRow == 5) {
@@ -84,6 +91,9 @@ function Board(): JSX.Element {
     }
     rows.push(<div className="boardRow">{cells}</div>);
   }
+
+  // start timer for metrics
+  startTimer();
   return <div className="board">{rows}</div>;
 }
 
