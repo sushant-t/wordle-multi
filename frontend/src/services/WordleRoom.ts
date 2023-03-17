@@ -6,6 +6,8 @@ type GameRoom = {
   roomId?: string;
   word?: string;
 };
+
+// get game room details from the backend, when game is ready to be played
 function queryGameRoom(session_id: string) {
   return new Promise<GameRoom>((resolve, reject) => {
     try {
@@ -27,6 +29,7 @@ function queryGameRoom(session_id: string) {
   });
 }
 
+// each player has a unique session ID, which allows the backend to keep track of players.
 function fetchSession(): string {
   let sid = window.localStorage.getItem("session_id");
   if (!sid) sid = v4();

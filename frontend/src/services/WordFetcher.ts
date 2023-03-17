@@ -20,10 +20,12 @@ async function fetchWord(wordLength: number) {
   });
 }
 
+// clear stored word from local storage when game is over
 function removeStoredWord() {
   window.localStorage.setItem("current_word", "");
 }
 
+// validate word against dictionary API
 async function checkValidWord(word: string) {
   return new Promise<boolean>((resolve, reject) => {
     try {

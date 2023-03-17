@@ -1,3 +1,6 @@
+// basic metric tracking for game
+
+// track the time elapsed from start to finish for a game
 function startTimer() {
   if (!window.localStorage.getItem("current_time")) {
     window.localStorage.setItem("current_time", Date.now().toString());

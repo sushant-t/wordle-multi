@@ -19,27 +19,25 @@ function Board(): JSX.Element {
   ) as AppContextProps;
 
   useEffect(() => {
-    // Update the document title using the browser API
-
+    // handle keyboard input and update the Board accordingly
     const useKeyHandler = (event: KeyboardEvent) => {
       if (event.key === "Backspace" || event.key === "Delete") {
-        console.log("deleting");
+        // can't backspace in an empty row
         if (curCol - 1 < 0) return;
         board[curRow][curCol - 1].letter = "";
         setBoard(board);
         setCurCol(curCol - 1);
-        console.log(board);
       } else if (event.key === "Enter") {
         if (curCol == 5) {
           let curWord = board[curRow]
             .map((entry: { letter: string; color: string }) => entry.letter)
             .join("");
-          console.log(curWord);
+          // validate word against a dictionary API
           checkValidWord(curWord).then((valid) => {
             if (curWord != targetWord && !valid) return;
             for (let ind = 0; ind < curWord.length; ind++) {
               if (curWord[ind] == targetWord[ind]) {
-                // mark letter as green
+                // mark letter as green on board and keyboard
                 board[curRow][ind].color = "green";
                 updateKeyboard(keyboard, curWord[ind], "green");
               } else if (targetWord.includes(curWord[ind])) {
@@ -52,12 +50,12 @@ function Board(): JSX.Element {
                 updateKeyboard(keyboard, curWord[ind], "black");
               }
             }
-
+            // we deep copy the object to ensure the state is getting updated
             setKeyboard(JSON.parse(JSON.stringify(keyboard)));
-            console.log(targetWord);
             setCurCol(0);
             setBoard(board);
             if (curWord == targetWord) {
+              // calculate metrics
               let timeElapsed = calculateTimeElapsed();
               console.log(`you won in ${timeElapsed} seconds!`);
               setCurCol(-1);
@@ -72,13 +70,13 @@ function Board(): JSX.Element {
             setCurRow(curRow + 1);
           });
         }
-      } else if (curCol >= 5 || curCol < 0) return;
+      } else if (curCol >= 5 || curCol < 0)
+        return; // do not accept input if curCol is not in a valid position
       else {
-        if (/^[a-z]$/i.test(event.key) == false) return;
+        if (/^[a-z]$/i.test(event.key) == false) return; // limit key presses to letters
         board[curRow][curCol].letter = event.key;
         setCurCol(curCol + 1);
         setBoard(board);
-        console.log(board);
       }
     };
     document.addEventListener("keydown", useKeyHandler);
@@ -89,6 +87,7 @@ function Board(): JSX.Element {
   });
   let rows = [];
 
+  // each grid in the Board is a Letter component
   for (let i = 0; i < 6; i++) {
     let cells = [];
     for (let j = 0; j < 5; j++) {
@@ -102,13 +101,13 @@ function Board(): JSX.Element {
   return <div className="board">{rows}</div>;
 }
 
+// update color and state of each key in keyboard
 function updateKeyboard(keyboard: any, letter: string, color: string) {
   keyboard.forEach((row: any) => {
     let ind = row
       .map((x: { letter: string; color: string }) => x.letter)
       .indexOf(letter);
     if (ind >= 0) {
-      console.log(row[ind]);
       if (color == "green") row[ind].color = color;
       if (row[ind].color == "") row[ind].color = color;
     }

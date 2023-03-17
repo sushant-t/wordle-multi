@@ -15,6 +15,7 @@ function Key(props: KeyProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [isActive, setActive] = useState(false);
 
+  // connect on-screen keyboard to keyboard events, easiest way to implement this
   const handleKeyPress = (event: React.MouseEvent<HTMLDivElement>) => {
     let code = event.currentTarget.innerText;
     if (event.currentTarget.innerText == "\u23ce") code = "Enter";
@@ -25,6 +26,7 @@ function Key(props: KeyProps) {
       );
   };
 
+  // handler to trigger button ripple effect when pressed
   const toggleActive = (state: boolean) => {
     setActive(state);
   };
@@ -32,6 +34,8 @@ function Key(props: KeyProps) {
   let { keyboard } = useContext(AppContext) as AppContextProps;
 
   let keyColor = "";
+
+  // get key color for this key component for CSS purposes
   keyboard.forEach((row: any) => {
     let ind = row
       .map((x: { letter: string; color: string }) => x.letter)

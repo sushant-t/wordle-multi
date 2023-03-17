@@ -1,3 +1,5 @@
+// The board and keyboard layouts are both 2D arrays of objects with letter and color properties.
+
 export const boardLayout = Array(6)
   .fill(null)
   .map(() =>
