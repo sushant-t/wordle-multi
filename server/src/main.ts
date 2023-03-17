@@ -29,6 +29,7 @@ app.get("/room", async (req, res) => {
       })
       .end();
   } else {
+    // sent different status code when room is not ready, to facilitate client-side checks
     res.status(204).end();
   }
 });
@@ -44,6 +45,9 @@ async function assignRooms() {
   return roomId;
 }
 
+// Logic For Waiting Room: a new waiting room is created every 10 seconds.
+// If there are 2 or more people in a room, a game is created.
+// If not, the waiting room is discarded and the players waiting will enter a new room.
 var priorRoom = "";
 async function manageRooms() {
   if (priorRoom && rooms[priorRoom] && rooms[priorRoom].members < 2) {
@@ -54,15 +58,13 @@ async function manageRooms() {
 }
 
 function main() {
+  // using localhost port for now that is different from react-app frontend port
   const port = 3001;
   app.listen(port, () => {
     console.log(`Backend listening on port ${port}`);
   });
 
   manageRooms();
-  setInterval(() => {
-    console.log(rooms);
-  }, 1000);
 }
 
 main();

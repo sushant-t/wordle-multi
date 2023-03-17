@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// fetch word of certain length from a random word API
 async function fetchWord(wordLength: number) {
   return new Promise<string>((resolve, reject) => {
     try {
