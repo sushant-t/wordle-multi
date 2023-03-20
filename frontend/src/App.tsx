@@ -66,6 +66,7 @@ function App() {
     }
   });
   if (gameType == GameType.MULTIPLAYER) {
+    pageShown = <WaitingRoom />;
     if (!ready) {
       let interval = setInterval(async () => {
         let data = await getGameDetails(sid);
