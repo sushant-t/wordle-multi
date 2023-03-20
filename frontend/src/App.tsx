@@ -7,6 +7,7 @@ import { fetchSession, queryGameRoom } from "./services/WordleRoom";
 import WaitingRoom from "./components/WaitingRoom";
 import { fetchWord } from "./services/WordFetcher";
 import Landing from "./components/Landing";
+import GameStatus from "./components/GameStatus";
 
 export type AppContextProps = {
   board: any;
@@ -15,6 +16,8 @@ export type AppContextProps = {
   setKeyboard: any;
   targetWord: any;
   setTargetWord: any;
+  gameOutcome: any;
+  setGameOutcome: any;
 };
 
 export type LandingContextProps = {
@@ -26,6 +29,12 @@ export enum GameType {
   SOLO,
   MULTIPLAYER,
 }
+
+export enum GameOutcome {
+  WIN,
+  LOSS,
+}
+
 export const AppContext = createContext<AppContextProps | undefined>(undefined);
 export const LandingContext = createContext<LandingContextProps | undefined>(
   undefined
@@ -37,6 +46,7 @@ function App() {
   const [keyboard, setKeyboard] = useState(keyboardLayout);
   const [targetWord, setTargetWord] = useState("");
   const [gameType, setGameType] = useState(null);
+  const [gameOutcome, setGameOutcome] = useState(null);
   let sid = fetchSession();
 
   var pageShown = (
@@ -80,10 +90,13 @@ function App() {
             setKeyboard,
             targetWord,
             setTargetWord,
+            gameOutcome,
+            setGameOutcome,
           }}
         >
           <Board />
           <Keyboard />
+          <GameStatus />
         </AppContext.Provider>
       </div>
     );

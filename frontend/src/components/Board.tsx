@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { AppContext, AppContextProps } from "../App";
+import { AppContext, AppContextProps, GameOutcome } from "../App";
 import { checkValidWord, removeStoredWord } from "../services/WordFetcher";
 import {
   calculateTimeElapsed,
@@ -14,9 +14,8 @@ function Board(): JSX.Element {
   const [curCol, setCurCol] = useState(0);
   const [curRow, setCurRow] = useState(0);
 
-  let { board, setBoard, keyboard, setKeyboard, targetWord } = useContext(
-    AppContext
-  ) as AppContextProps;
+  let { board, setBoard, keyboard, setKeyboard, targetWord, setGameOutcome } =
+    useContext(AppContext) as AppContextProps;
 
   useEffect(() => {
     // handle keyboard input and update the Board accordingly
@@ -58,6 +57,7 @@ function Board(): JSX.Element {
               // calculate metrics
               let timeElapsed = calculateTimeElapsed();
               console.log(`you won in ${timeElapsed} seconds!`);
+              setGameOutcome(GameOutcome.WIN);
               setCurCol(-1);
               removeStoredWord();
               clearTimer();
@@ -65,6 +65,7 @@ function Board(): JSX.Element {
             }
             if (curRow == 5) {
               console.log("You lost!");
+              setGameOutcome(GameOutcome.LOSS);
               return;
             }
             setCurRow(curRow + 1);
