@@ -1,5 +1,5 @@
 import { v4 } from "uuid";
-let url = "http://localhost:3001";
+let url = process.env["REACT_APP_BACKEND_URL"] || "http://localhost:3001";
 
 type GameRoom = {
   ready: boolean;
