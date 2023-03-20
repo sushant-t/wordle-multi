@@ -1,4 +1,3 @@
-import logo from "./logo.svg";
 import "./App.css";
 import React, { createContext, useEffect, useState } from "react";
 import Board from "./components/Board";
@@ -6,6 +5,8 @@ import { boardLayout, keyboardLayout } from "./layout/Layout";
 import Keyboard from "./components/Keyboard";
 import { fetchSession, queryGameRoom } from "./services/WordleRoom";
 import WaitingRoom from "./components/WaitingRoom";
+import { fetchWord } from "./services/WordFetcher";
+import Landing from "./components/Landing";
 
 export type AppContextProps = {
   board: any;
@@ -15,32 +16,60 @@ export type AppContextProps = {
   targetWord: any;
   setTargetWord: any;
 };
+
+export type LandingContextProps = {
+  gameType: any;
+  setGameType: any;
+};
+
+export enum GameType {
+  SOLO,
+  MULTIPLAYER,
+}
 export const AppContext = createContext<AppContextProps | undefined>(undefined);
+export const LandingContext = createContext<LandingContextProps | undefined>(
+  undefined
+);
 
 function App() {
   const [ready, setReady] = useState(false);
   const [board, setBoard] = useState(boardLayout);
   const [keyboard, setKeyboard] = useState(keyboardLayout);
   const [targetWord, setTargetWord] = useState("");
-
+  const [gameType, setGameType] = useState(null);
   let sid = fetchSession();
 
   var pageShown = (
     <div>
-      <WaitingRoom />
+      <LandingContext.Provider value={{ gameType, setGameType }}>
+        <Landing />
+      </LandingContext.Provider>
     </div>
   );
-  if (!ready) {
-    let interval = setInterval(async () => {
-      let data = await getGameDetails(sid);
-      console.log(data);
-      if (data.ready) {
-        setTargetWord(data.word as string);
+  useEffect(() => {
+    console.log(gameType == GameType.SOLO);
+    if (gameType == GameType.SOLO) {
+      fetchWord(5).then((word) => {
+        setTargetWord(word);
         setReady(true);
-        clearInterval(interval);
-      }
-    }, 1000);
-  } else {
+      });
+    }
+  });
+  if (gameType == GameType.MULTIPLAYER) {
+    if (!ready) {
+      let interval = setInterval(async () => {
+        let data = await getGameDetails(sid);
+        console.log(data);
+        if (data.ready) {
+          setTargetWord(data.word as string);
+          setReady(true);
+          clearInterval(interval);
+        }
+      }, 1000);
+    }
+  }
+
+  if (ready) {
     pageShown = (
       <div>
         <AppContext.Provider

@@ -266,3 +266,18 @@ h1 {
   padding: 2em;
   color: white;
 }
+
+.landing-header {
+  text-transform: capitalize;
+}
+
+.landing-image {
+  background: #717376;
+}
+
+.landing-buttons {
+  width: 30%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+}
